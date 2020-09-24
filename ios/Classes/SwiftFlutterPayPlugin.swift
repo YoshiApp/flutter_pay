@@ -48,7 +48,8 @@ public class SwiftFlutterPayPlugin: NSObject, FlutterPlugin {
                 let currency = params["currencyCode"] as? String,
                 let countryCode = params["countryCode"] as? String,
                 let allowedPaymentNetworks = params["allowedPaymentNetworks"] as? [String],
-                let items = params["items"] as? [[String: String]] else {
+                let items = params["items"] as? [[String: String]],
+                let isPending = params["isPending"] as? Bool else {
                     result(FlutterError(code: "invalidParameters", message: "Invalid parameters", details: nil))
                     return
         }
@@ -58,7 +59,7 @@ public class SwiftFlutterPayPlugin: NSObject, FlutterPlugin {
             let itemTitle = item["name"]
             let itemPrice = item["price"]
             let itemDecimalPrice = NSDecimalNumber(string: itemPrice)
-            let item = PKPaymentSummaryItem(label: itemTitle ?? "", amount: itemDecimalPrice)
+            let item = PKPaymentSummaryItem(label: itemTitle ?? "", amount: itemDecimalPrice, type: isPending ?  PKPaymentSummaryItemType.pending : PKPaymentSummaryItemType.final)
             paymentItems.append(item)
         }
         
